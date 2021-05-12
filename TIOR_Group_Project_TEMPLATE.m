@@ -19,4 +19,6 @@ for i = 1:numSensors
     % random generation of sensor coordinates following Poisson distribution
     x_pois = [random('Poisson', lambda), random('Poisson', lambda)]    
     X_Poisson = [X_Poisson; x_pois]
+    
+% ENTER CODE HERE
         
