@@ -2,9 +2,9 @@
 % MEMBERS: Chris Swan, Dominic Yew, Greta Di Lorenzo, Mark O'Brien
 
 
-numSensors = 1000;   % Number of sensors we want to test with
+numSensors = 300;   % Number of sensors we want to test with
 
-fieldSize = 100;     % Dimensions of the size of the field we are dealing with for uniformly distributed sensors 
+fieldSize = 5000;     % Dimensions of the size of the field we are dealing with for uniformly distributed sensors 
                     % *ASSUMING SQUARE FIELD*
 %lambda = 50;         % Parameter for Poisson distribution of sensors     
 
@@ -27,7 +27,7 @@ end
 S = [random('Uniform', -fieldSize, fieldSize), random('Uniform', -fieldSize, fieldSize)]
 % randomly generate initial relay location
 
-[s_list, norms] = Descent(S, X_Uniform, init_step, epsilon);
+[s_list, norms] = Descent(S, X_Uniform, epsilon);
 disp(s_list);
 disp(norms);
 

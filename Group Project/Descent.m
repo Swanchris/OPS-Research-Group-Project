@@ -1,30 +1,35 @@
 % INPUTS:
-% s0: row vector of initial relay location
+% s: row vector of relay
 % X: matrix of row vectors containing all coordinates of sensors
-% init_step: initial step parameter
 % epsilon: algorithm termination threshold parameter
 
 % OUTPUTS:
 % steps: matrix showing relay coordinates for each step of descent 
 % norms: column vector showing norm for each relay position
 
-function [steps, norms] = Descent(s0, X, init_step, epsilon)
-b = betafunc(s0,X);
+function [steps, norms] = Descent(s, X, epsilon)
+s0 = s;
 k = 1;
+beta = max(X_norms_sqrd(s0, X));
 s_list = [s0];
-lambda = init_step;
-s1 = GD(s0,X,lambda,k,b);
+lambda = 1/(max(svd(X*transpose(X))));
+theta = 1e20;
+s1 = GD(s0,X,k,beta, lambda);
 s_list = [s_list; s1];
-N = norm(P_grad(s1,X,k,b))^2;
+N = norm(gradient_function(s1,X,k,beta));
 norm_list = [N];
 
 while N > epsilon
-    b = betafunc(s0, X);
-    lambda = stepsize(s1,s0,X,k,b);
+    old_lambda = lambda
+    min1 = sqrt(1+theta)*old_lambda;
+    delta_grad = gradient_function(s1,X,k,beta)-gradient_function(s0,X,k,beta);
+    min2 = norm(s1-s0)/(2*norm(delta_grad));
+    lambda = min([min1, min2]);
+    theta = lambda/old_lambda;
     s0 = s1;
-    s1 = GD(s0,X,lambda,k,b);
+    s1 = GD(s0,X,k,beta,lambda);
     s_list = [s_list; s1];
-    N = norm(P_grad(s1,X,k,b))^2;
+    N = norm(gradient_function(s1,X,k,beta));
     norm_list = [norm_list; N];
     k = k+1
 end
